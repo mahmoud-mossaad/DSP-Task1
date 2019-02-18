@@ -209,7 +209,7 @@ if get(handles.togglebutton, 'value') == 0
         handles.step = 25;
     end
     handles.nmax = length(handles.var)-2000
-    set(handles.text2, 'string', 'You shall enjoy looking at the signal') %%Set the static text to the value showen%%
+    set(handles.text2, 'string', '') %%Set the static text to the value showen%%
     plot(handles.var(1,:))
     axis([0 1800 min(handles.var(1,:)) max(handles.var(1,:))])
     handles.browsed = 0;
