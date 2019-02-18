@@ -57,16 +57,6 @@ handles.output = hObject;
 %our beloved counter%
 f=1;
 handles.f=f;
-
-myImage = imread('intro.png');
-set(handles.axes1,'Units','pixels');
-resizePos = get(handles.axes1,'Position');
-myImage= imresize(myImage, [resizePos(3) resizePos(3)]);
-axes(handles.axes1);
-imshow(myImage);
-get(0,'Factory')
-set(0,'defaultfigurecolor','k')
-set(handles.axes1,'Units','normalized');
 % Update handles structure
 guidata(hObject, handles);
 
@@ -97,38 +87,19 @@ signal = handles.var; %Handing the signal to 'signal' for better coding%
 
 %checks what type of signal is browsed to set the appropiate slider's
 %minimum and maximum value%
-if len == 38400
-    x = 1:len;
-    Dx=1800; y1=-1000; y2=2500;
-    plot(x,signal,'g'); axis([v v+Dx y1 y2]);drawnow
-    set(gca,'Color','k')
-    set(handles.axes1,{'ycolor'},{'g'})
-    set(handles.axes1,{'xcolor'},{'g'})
-else if len == 921600
-        x = 1:len;
-        Dx=1800; y1=-2200; y2=3800;
-        plot(x,signal(1,:),'g'); axis([v v+Dx y1 y2]);drawnow
-        set(gca,'Color','k')
-        set(handles.axes1,{'ycolor'},{'g'})
-        set(handles.axes1,{'xcolor'},{'g'})
-    else if len == 100000
-            x = 1:len;
-            Dx=1000; y1=300; y2=800;
-            plot(x,signal(),'g'); axis([v v+Dx y1 y2]); drawnow
-            set(gca,'Color','k')
-            set(handles.axes1,{'ycolor'},{'g'})
-            set(handles.axes1,{'xcolor'},{'g'})
-        else if len == 50860
-                x = 1:len;
-                Dx=1200; y1=-5000; y2=8000;
-                plot(x,signal(),'g'); axis([v v+Dx y1 y2]); drawnow
-                set(gca,'Color','k')
-                set(handles.axes1,{'ycolor'},{'g'})
-                set(handles.axes1,{'xcolor'},{'g'})
-            end
-        end
+x = 1:len;
+Dx=1800; y1=min(handles.var(1,:)); y2=max(handles.var(1,:));
+plot(x,signal(1,:)); axis([v v+Dx y1 y2]);drawnow
+if get(handles.togglebutton, 'value')==0
+    n=1:handles.step:handles.nmax;
+    result = min(n(n>=get(handles.slider, 'value')))
+    if result<handles.nmax | result>0
+    handles.f=result
+    else
+        handles.f=handles.nmax
     end
 end
+
         
 
  
@@ -158,143 +129,46 @@ function togglebutton_Callback(hObject, eventdata, handles)
 
 
 %checks if the signal is done and reset the counter f for ECG%
-if length(handles.var) == 38400
-    if handles.f == 36601 | handles.browsed == 0
+
+if get(handles.slider, 'value')~= handles.f
+    n=1:handles.step:handles.nmax;
+    result = min(n(n>=get(handles.slider, 'value')))
+    if result<handles.nmax | result>0
+        handles.f=result
+    else
+        handles.f=handles.nmax
+    end
+ 
+end
+if handles.f >= handles.nmax | handles.browsed == 0
         handles.f = 1;
         handles.browsed = 1
-        
-    end
-    %%checks if the signal is done and reset the counter f for EEG%%
-    else if length(handles.var) == 921600
-            if handles.f == 919810 | handles.browsed == 0
-            handles.f = 1;
-            handles.browsed = 1;
-           
-            end
-            %%checks if the signal is done and reset the counter f for EHG%%
-        else if length(handles.var) == 100000
-                if handles.f == 98976 | handles.browsed == 0
-                    handles.f = 1;
-                    handles.browsed = 1
-                    
-                end
-                %%checks if the signal is done and reset the counter f for EMG%%
-            else if length(handles.var) == 50860
-                       if handles.f == 49666 | handles.browsed == 0
-                            handles.f = 1;
-                            handles.browsed = 1
-                            
-                       end
-                end
-            end
-        end
 end
 %checks if the button is pressed and the signal is ECG%
-if length(handles.var) == 38400 & get(handles.togglebutton, 'value') ==1
-    ecg = handles.var;
-    x = 1:38400;
-    Dx=1800; y1=-1000; y2=2500;
-    %%ploting the signal with the counter f%%
-    for n=handles.f:25:36600
-        plot(x,ecg,'g'); axis([x(n) x(n+Dx) y1 y2]);drawnow
-        set(gca,'Color','k')
-        set(handles.axes1,{'ycolor'},{'g'})
-        set(handles.axes1,{'xcolor'},{'g'})
-        handles.f = handles.f+25
+if get(handles.togglebutton, 'value') ==1
+    sig = handles.var(1,:);
+    x = 1:length(handles.var);
+    Dx=1800; y1=min(handles.var(1,:)); y2=max(handles.var(1,:));
+%%the signal with the counter f%%
+    for n=handles.f:handles.step:handles.nmax
+        plot(x,sig); axis([x(n) x(n+Dx) y1 y2]);drawnow
+        handles.f = handles.f+handles.step
         set(handles.slider, 'value', handles.f)
         %%checks the toggle button if it's paused during the plotting%%
         if get(handles.togglebutton, 'value') ~= 1
                break;
         end
     end
-    %checks if the button is pressed and the signal is EEG%
-else if length(handles.var) == 921600 & get(handles.togglebutton, 'value') == 1
-        eeg = handles.var(1,:);
-        x = 1:921600;
-        Dx=1800; y1=-2200; y2=3800;
-        %ploting the signal with the counter f%
-        for n=handles.f:99:919711
-            plot(x,eeg,'g'); axis([x(n) x(n+Dx) y1 y2]);drawnow
-            set(gca,'Color','k')
-            set(handles.axes1,{'ycolor'},{'g'})
-            set(handles.axes1,{'xcolor'},{'g'})
-            handles.f = handles.f+99
-            set(handles.slider, 'value', handles.f)
-            %checks the toggle button if it's paused during the plotting%
-            if get(handles.togglebutton, 'value') ~= 1
-               break;
-            end
-        end
-        %checks if the button is pressed and the signal is EHG%
-    else if length(handles.var) == 100000 & get(handles.togglebutton, 'value') == 1
-        ehg = handles.var;
-        x = 1:100000;
-        Dx=1000; y1=300; y2=800;
-        %ploting the signal with the counter f%
-        for n=handles.f:25:98969
-            plot(x,ehg,'g'); axis([x(n) x(n+Dx) y1 y2]);drawnow
-            set(gca,'Color','k')
-            set(handles.axes1,{'ycolor'},{'g'})
-            set(handles.axes1,{'xcolor'},{'g'})
-            zoom xon
-            handles.f = handles.f+25
-            set(handles.slider, 'value', handles.f)
-            %checks the toggle button if it's paused during the plotting%
-            if get(handles.togglebutton, 'value') ~= 1
-               break;
-            end
-        end
-        %checks if the button is pressed and the signal is EMG%
-        else if length(handles.var) == 50860 & get(handles.togglebutton, 'value') == 1
-                emg = handles.var;
-                x = 1:50860;
-                Dx=1200; y1=-5000; y2=8000;
-                %ploting the signal with the counter f%
-                for n=handles.f:15:49651
-                    plot(x,emg,'g'); axis([x(n) x(n+Dx) y1 y2]);drawnow
-                    set(gca,'Color','k')
-                    set(handles.axes1,{'ycolor'},{'g'})
-                    set(handles.axes1,{'xcolor'},{'g'})
-                    handles.f = handles.f+15
-                    set(handles.slider, 'value', handles.f)
-                    %checks the toggle button if it's paused during the plotting%
-                    if get(handles.togglebutton, 'value') ~= 1
-                        break;
-                    end
-                end
-            end
-        end
-    end
 end
+    %checks if the button is pressed and the signal is EEG%
+
 %% If conditions to reset the counter whether the plotting is done or the browse button%%
 %%is pressed%%
-if length(handles.var) == 38400
-    if handles.f == 36601 | handles.browsed == 0
+
+if handles.f >= handles.nmax | handles.browsed == 0
         handles.f = 1;
         handles.browsed = 1
         set(handles.togglebutton, 'value', 0)
-    end
-    else if length(handles.var) == 921600
-            if handles.f == 919810 | handles.browsed == 0
-            handles.f = 1;
-            handles.browsed = 1;
-            set(handles.togglebutton, 'value', 0)
-            end
-        else if length(handles.var) == 100000
-                if handles.f == 98976 | handles.browsed == 0
-                    handles.f = 1;
-                    handles.browsed = 1
-                    set(handles.togglebutton, 'value', 0)
-                end
-            else if length(handles.var) == 50860
-                       if handles.f == 49666 | handles.browsed == 0
-                            handles.f = 1;
-                            handles.browsed = 1
-                            set(handles.togglebutton, 'value', 0)
-                       end
-                end
-            end
-        end
 end
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of togglebutton
@@ -319,50 +193,29 @@ function browse_Callback(hObject, eventdata, handles)
 if get(handles.togglebutton, 'value') == 0
     [FileName,FilePath]= uigetfile();
     ExPath = fullfile(FilePath, FileName);
-    var = load(ExPath);
-    handles.var = var.val;
+    check = true;
+    try
+    var = load(ExPath);   %I can't load this file
+    catch
+    check = false;
+    set(handles.text2, 'string', 'It is not a signal')
+    end
+    if check
+    handles.var = var.val
     set(handles.slider, 'max', length(handles.var))
-%%Sending the signal that's browsed to the toggle button and the slider%%
-switch length(var.val);
-    case 38400 % User selects ECG.
-        set(handles.text2, 'string', 'ECG Signal') %%Set the static text to the value showen%%
-        plot(handles.var,'g')
-        set(gca,'Color','k')
-        set(handles.axes1,{'ycolor'},{'g'})
-        set(handles.axes1,{'xcolor'},{'g'})
-        zoom xon
-        zoom(20)
-        handles.browsed = 0;
-    case 921600 % User selects EEG.
-        set(handles.text2, 'string', 'EEG Signal') %Set the static text to the value showen%%
-        plot(handles.var(1,:),'g')
-        set(gca,'Color','k')
-        set(handles.axes1,{'ycolor'},{'g'})
-        set(handles.axes1,{'xcolor'},{'g'})
-        zoom xon
-        zoom(90)
-        handles.browsed = 0;
-    case 100000 % User selects EHG
-        set(handles.text2, 'string', 'EHG Signal') %%Set the static text to the value showen%%
-        plot(handles.var,'g')
-        set(gca,'Color','k')
-        set(handles.axes1,{'ycolor'},{'g'})
-        set(handles.axes1,{'xcolor'},{'g'})
-        zoom xon
-        zoom(50)
-        handles.browsed = 0;
-    case 50860 % User selects EMG
-        set(handles.text2, 'string', 'EMG Signal') %%Set the static text to the value showen%%
-        plot(handles.var,'g')
-        set(gca,'Color','k')
-        set(handles.axes1,{'ycolor'},{'g'})
-        set(handles.axes1,{'xcolor'},{'g'})
-        zoom xon
-        zoom(30)
-        handles.browsed = 0;
+    if length(handles.var) > 500000
+        handles.step = 99;
+    else
+        handles.step = 25;
+    end
+    handles.nmax = length(handles.var)-2000
+    set(handles.text2, 'string', 'ECG Signal') %%Set the static text to the value showen%%
+    plot(handles.var(1,:))
+    axis([0 1800 min(handles.var(1,:)) max(handles.var(1,:))])
+    handles.browsed = 0;
+    end
 end
 guidata(hObject, handles);
-end
 
 
 % --- Executes during object creation, after setting all properties.
