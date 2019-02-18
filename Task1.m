@@ -57,6 +57,16 @@ handles.output = hObject;
 %our beloved counter%
 f=1;
 handles.f=f;
+
+myImage = imread('intro.png');
+set(handles.axes1,'Units','pixels');
+resizePos = get(handles.axes1,'Position');
+myImage= imresize(myImage, [resizePos(3) resizePos(3)]);
+axes(handles.axes1);
+imshow(myImage);
+get(0,'Factory')
+set(0,'defaultfigurecolor','k')
+set(handles.axes1,'Units','normalized');
 % Update handles structure
 guidata(hObject, handles);
 
@@ -90,19 +100,31 @@ signal = handles.var; %Handing the signal to 'signal' for better coding%
 if len == 38400
     x = 1:len;
     Dx=1800; y1=-1000; y2=2500;
-    plot(x,signal); axis([v v+Dx y1 y2]);drawnow
+    plot(x,signal,'g'); axis([v v+Dx y1 y2]);drawnow
+    set(gca,'Color','k')
+    set(handles.axes1,{'ycolor'},{'g'})
+    set(handles.axes1,{'xcolor'},{'g'})
 else if len == 921600
         x = 1:len;
         Dx=1800; y1=-2200; y2=3800;
-        plot(x,signal(1,:)); axis([v v+Dx y1 y2]);drawnow
+        plot(x,signal(1,:),'g'); axis([v v+Dx y1 y2]);drawnow
+        set(gca,'Color','k')
+        set(handles.axes1,{'ycolor'},{'g'})
+        set(handles.axes1,{'xcolor'},{'g'})
     else if len == 100000
             x = 1:len;
             Dx=1000; y1=300; y2=800;
-            plot(x,signal()); axis([v v+Dx y1 y2]); drawnow
+            plot(x,signal(),'g'); axis([v v+Dx y1 y2]); drawnow
+            set(gca,'Color','k')
+            set(handles.axes1,{'ycolor'},{'g'})
+            set(handles.axes1,{'xcolor'},{'g'})
         else if len == 50860
                 x = 1:len;
                 Dx=1200; y1=-5000; y2=8000;
-                plot(x,signal()); axis([v v+Dx y1 y2]); drawnow
+                plot(x,signal(),'g'); axis([v v+Dx y1 y2]); drawnow
+                set(gca,'Color','k')
+                set(handles.axes1,{'ycolor'},{'g'})
+                set(handles.axes1,{'xcolor'},{'g'})
             end
         end
     end
@@ -174,7 +196,10 @@ if length(handles.var) == 38400 & get(handles.togglebutton, 'value') ==1
     Dx=1800; y1=-1000; y2=2500;
     %%ploting the signal with the counter f%%
     for n=handles.f:25:36600
-        plot(x,ecg); axis([x(n) x(n+Dx) y1 y2]);drawnow
+        plot(x,ecg,'g'); axis([x(n) x(n+Dx) y1 y2]);drawnow
+        set(gca,'Color','k')
+        set(handles.axes1,{'ycolor'},{'g'})
+        set(handles.axes1,{'xcolor'},{'g'})
         handles.f = handles.f+25
         set(handles.slider, 'value', handles.f)
         %%checks the toggle button if it's paused during the plotting%%
@@ -189,7 +214,10 @@ else if length(handles.var) == 921600 & get(handles.togglebutton, 'value') == 1
         Dx=1800; y1=-2200; y2=3800;
         %ploting the signal with the counter f%
         for n=handles.f:99:919711
-            plot(x,eeg); axis([x(n) x(n+Dx) y1 y2]);drawnow
+            plot(x,eeg,'g'); axis([x(n) x(n+Dx) y1 y2]);drawnow
+            set(gca,'Color','k')
+            set(handles.axes1,{'ycolor'},{'g'})
+            set(handles.axes1,{'xcolor'},{'g'})
             handles.f = handles.f+99
             set(handles.slider, 'value', handles.f)
             %checks the toggle button if it's paused during the plotting%
@@ -204,7 +232,11 @@ else if length(handles.var) == 921600 & get(handles.togglebutton, 'value') == 1
         Dx=1000; y1=300; y2=800;
         %ploting the signal with the counter f%
         for n=handles.f:25:98969
-            plot(x,ehg); axis([x(n) x(n+Dx) y1 y2]);drawnow
+            plot(x,ehg,'g'); axis([x(n) x(n+Dx) y1 y2]);drawnow
+            set(gca,'Color','k')
+            set(handles.axes1,{'ycolor'},{'g'})
+            set(handles.axes1,{'xcolor'},{'g'})
+            zoom xon
             handles.f = handles.f+25
             set(handles.slider, 'value', handles.f)
             %checks the toggle button if it's paused during the plotting%
@@ -219,7 +251,10 @@ else if length(handles.var) == 921600 & get(handles.togglebutton, 'value') == 1
                 Dx=1200; y1=-5000; y2=8000;
                 %ploting the signal with the counter f%
                 for n=handles.f:15:49651
-                    plot(x,emg); axis([x(n) x(n+Dx) y1 y2]);drawnow
+                    plot(x,emg,'g'); axis([x(n) x(n+Dx) y1 y2]);drawnow
+                    set(gca,'Color','k')
+                    set(handles.axes1,{'ycolor'},{'g'})
+                    set(handles.axes1,{'xcolor'},{'g'})
                     handles.f = handles.f+15
                     set(handles.slider, 'value', handles.f)
                     %checks the toggle button if it's paused during the plotting%
@@ -291,25 +326,37 @@ if get(handles.togglebutton, 'value') == 0
 switch length(var.val);
     case 38400 % User selects ECG.
         set(handles.text2, 'string', 'ECG Signal') %%Set the static text to the value showen%%
-        plot(handles.var)
+        plot(handles.var,'g')
+        set(gca,'Color','k')
+        set(handles.axes1,{'ycolor'},{'g'})
+        set(handles.axes1,{'xcolor'},{'g'})
         zoom xon
         zoom(20)
         handles.browsed = 0;
     case 921600 % User selects EEG.
         set(handles.text2, 'string', 'EEG Signal') %Set the static text to the value showen%%
-        plot(handles.var(1,:))
+        plot(handles.var(1,:),'g')
+        set(gca,'Color','k')
+        set(handles.axes1,{'ycolor'},{'g'})
+        set(handles.axes1,{'xcolor'},{'g'})
         zoom xon
         zoom(90)
         handles.browsed = 0;
     case 100000 % User selects EHG
         set(handles.text2, 'string', 'EHG Signal') %%Set the static text to the value showen%%
-        plot(handles.var)
+        plot(handles.var,'g')
+        set(gca,'Color','k')
+        set(handles.axes1,{'ycolor'},{'g'})
+        set(handles.axes1,{'xcolor'},{'g'})
         zoom xon
         zoom(50)
         handles.browsed = 0;
     case 50860 % User selects EMG
         set(handles.text2, 'string', 'EMG Signal') %%Set the static text to the value showen%%
-        plot(handles.var)
+        plot(handles.var,'g')
+        set(gca,'Color','k')
+        set(handles.axes1,{'ycolor'},{'g'})
+        set(handles.axes1,{'xcolor'},{'g'})
         zoom xon
         zoom(30)
         handles.browsed = 0;
