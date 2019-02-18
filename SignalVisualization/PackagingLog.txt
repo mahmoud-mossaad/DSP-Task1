@@ -1,0 +1,23 @@
+ant:
+<ant>
+  <mkdir dir="E:\Study\Third year\Second Term\DSP\Task 1\SignalVisualization\for_redistribution" />
+  <mkdir dir="E:\Study\Third year\Second Term\DSP\Task 1\SignalVisualization\for_testing" />
+  <mkdir dir="E:\Study\Third year\Second Term\DSP\Task 1\SignalVisualization\for_redistribution_files_only" />
+</ant>
+mcc -C -o SignalVisualization -W WinMain:SignalVisualization -T link:exe -d 'E:\Study\Third year\Second Term\DSP\Task 1\SignalVisualization\for_testing' -v 'E:\Study\Third year\Second Term\DSP\Task 1\Task1.m' -a 'E:\Study\Third year\Second Term\DSP\Task 1\Task1.m' 
+Compiler version: 6.0 (R2015a)
+Dependency analysis by REQUIREMENTS.
+[Warning: Adding path "E:\Study\Third year\Second Term\DSP\Task 1" to Compiler
+path instance.] 
+Parsing file "E:\Study\Third year\Second Term\DSP\Task 1\Task1.m"
+	(Referenced from: "Compiler Command Line").
+Deleting 0 temporary MEX authorization files.
+Generating file "E:\Study\Third year\Second Term\DSP\Task 1\SignalVisualization\for_testing\readme.txt".
+Packaging...
+Adding custom icon E:\Programs\Matlab1\toolbox\compiler\Resources\default_icon.ico to E:\Study\Third year\Second Term\DSP\Task 1\SignalVisualization\for_testing\SignalVisualization.exe.
+Attempting to embed the CTF archive into the application E:\Study\Third year\Second Term\DSP\Task 1\SignalVisualization\for_testing\SignalVisualization.exe.
+Finished embedding CTF archive. Deleting the external CTF archive.
+Creating the bundle...
+Web based installer created at E:\Study\Third year\Second Term\DSP\Task 1\SignalVisualization\for_redistribution\MyAppInstaller_web.exe.
+Packaging complete.
+Elapsed packaging time was: 1 minutes and 34 seconds.
