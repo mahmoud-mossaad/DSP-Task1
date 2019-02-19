@@ -193,8 +193,8 @@ function browse_Callback(hObject, eventdata, handles)
 if get(handles.togglebutton, 'value') == 0
     [FileName,FilePath]= uigetfile();
     ExPath = fullfile(FilePath, FileName);
-    check = true;
-    try
+    check = true; 
+    try %check if the file is mat or not
     var = load(ExPath);   %I can't load this file
     catch
     check = false;
@@ -204,7 +204,7 @@ if get(handles.togglebutton, 'value') == 0
     handles.var = var.val
     set(handles.slider, 'max', length(handles.var))
     if length(handles.var) > 500000
-        handles.step = 99;
+        handles.step = 99; %the step for the for loop
     else
         handles.step = 25;
     end
